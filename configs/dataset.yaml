@@ -1,0 +1,10 @@
+path: ../data
+
+train: train/img
+val: val/img
+test: test/img
+
+nc: 1
+
+names:
+  0: UAV
