@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LiYOLO-Track | CAIM Lab</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         CAIM TOP BANNER
+    ========================== -->
+    <div class="caim-banner-image">
+    <img src="assets/images/caim-banner.png" alt="CAIM Lab - Jeonbuk National University">
+</div>
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-text">
+
+                <p class="project-label">
+                    CAIM RESEARCH PROJECT
+                </p>
+
+                <h1>
+                    LiYOLO-Track
+                </h1>
+
+                <h2>
+                     A Lightweight Day–Night Framework for Anti-Drone Detection
+                     and ID-Based Tracking
+                </h2>
+
+                <div class="authors">
+                    <a href="#">Muhammad Farhan</a>
+                    <a href="#">Hassan Eesaar</a>
+                    <a href="#">Afaq Ahmed</a>
+                    <a href="#">Deok Jin Lee</a>
+                </div>
+
+                <p class="affiliation">
+                    Department of Electronics and Information Engineering,
+                    Jeonbuk National University
+                    <br>
+                    <span>Center for Autonomous Intelligence and e-Mobility (CAIM)</span>
+                </p>
+
+                <div class="hero-buttons">
+
+                   <a href="#experiments" class="btn btn-primary">
+    Watch the Experiments
+</a>
+
+<a href="https://github.com/FarhanAICodeHub/LiYOLO-Track"
+   class="btn"
+   target="_blank">
+    Code
+</a>
+
+<a href="#paper" class="btn">
+    Paper
+</a>
+
+                    <a href="#results" class="btn">
+                        Results
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT SIDE VISUAL -->
+            <div class="hero-visual">
+
+                <div class="radar-box">
+
+                    <div class="radar-circle radar-1"></div>
+                    <div class="radar-circle radar-2"></div>
+                    <div class="radar-circle radar-3"></div>
+
+                    <div class="cross-line horizontal"></div>
+                    <div class="cross-line vertical"></div>
+
+                    <div class="drone-target">
+                        UAV
+                    </div>
+
+                    <div class="tracking-box">
+                        TRACKING
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         NAVIGATION STRIP
+    ========================== -->
+    <nav class="section-nav">
+
+    <a href="#about">About</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#experiments">Experiments</a>
+    <a href="#ablation">Ablation</a>
+    <a href="#tracking">Tracking</a>
+    <a href="#results">Results</a>
+    <a href="#setup">Setup</a>
+    <a href="#conclusion">Conclusion</a>
+    <a href="#paper">Paper</a>
+
+</nav>
+
+   <section id="about" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Abstract</h2>
+
+        <p class="abstract-text">
+            The rapid proliferation of unmanned aerial vehicles (UAVs) in both civilian
+            and restricted airspace poses significant security challenges, particularly
+            in complex environments and low-light conditions where conventional detection
+            systems fail to perform reliably. This paper proposes a comprehensive
+            anti-drone surveillance framework with three key contributions. First, we
+            present a CBAM-augmented YOLOv11n architecture that integrates the
+            Convolutional Block Attention Module (CBAM) at every backbone stage,
+            allowing the model to selectively focus on drone-relevant features while
+            suppressing background clutter caused by trees, buildings, and complex textures.
+            Second, to address the detection of small and low-altitude drones, an additional
+            P2 detection head operating at 160 × 160 spatial resolution is introduced
+            alongside the standard multi-scale heads, significantly improving sensitivity
+            toward tiny drone instances. Third, a night vision enhancement stage based on
+            LIVENet, fine-tuned on drone-specific imagery, is integrated as a preprocessing
+            module to improve low-light and nighttime frames before detection.
+        </p>
+
+        <p class="abstract-text">
+            The enhanced detection pipeline is further coupled with BoT-SORT for robust
+            multi-object tracking, providing stable and continuous drone trajectory
+            estimation with zero identity switches across test sequences. Experimental
+            results demonstrate an mAP@0.5 of 0.985, mAP@0.5:0.95 of 0.745,
+            precision of 0.985, and recall of 0.962, outperforming YOLOv5n, YOLOv6n,
+            YOLOv8n, YOLOv9n, YOLOv10n, and the YOLOv11n baseline.
+        </p>
+
+    </div>
+</section>
+<section id="results" class="metrics-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Key Results</h2>
+
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+                <h3>98.5%</h3>
+                <p>mAP@0.5</p>
+            </div>
+
+            <div class="metric-card">
+                <h3>74.5%</h3>
+                <p>mAP@0.5:0.95</p>
+            </div>
+
+            <div class="metric-card">
+                <h3>98.5%</h3>
+                <p>Precision</p>
+            </div>
+
+            <div class="metric-card">
+                <h3>96.2%</h3>
+                <p>Recall</p>
+            </div>
+
+            <div class="metric-card">
+                <h3>92.5</h3>
+                <p>FPS</p>
+            </div>
+
+        </div>
+
+        <p class="results-note">
+            LiYOLO achieves the best overall detection performance among the
+            evaluated lightweight YOLO models while maintaining a compact
+            2.7M-parameter architecture suitable for real-time anti-drone surveillance.
+        </p>
+
+    </div>
+</section>
+<section id="architecture" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">System Architecture</h2>
+
+        <p class="architecture-intro">
+            LiYOLO-Track combines illumination-aware preprocessing,
+            LivNet-based low-light enhancement, the proposed LiYOLO detector,
+            and BoT-SORT tracking within a unified day–night anti-drone
+            surveillance pipeline.
+        </p>
+
+        <div class="architecture-image">
+            <img src="assets/images/liYOLO_pipeline.png"
+                 alt="LiYOLO-Track anti-drone detection and tracking pipeline">
+        </div>
+
+    </div>
+</section>
+<section class="features-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Proposed Framework</h2>
+
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <h3>CBAM Attention</h3>
+                <p>
+                    CBAM modules are inserted after C3k2 blocks in the YOLOv11n
+                    backbone to emphasize UAV-relevant channel and spatial features
+                    while suppressing complex background clutter.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>P2 Detection Head</h3>
+                <p>
+                    An additional P2 head operating at 160 × 160 resolution preserves
+                    high-resolution spatial information for detecting small and distant UAVs.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>LivNet Enhancement</h3>
+                <p>
+                    Low-light and nighttime frames are selectively enhanced using a
+                    drone-specific fine-tuned LivNet model before UAV detection.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>BoT-SORT Tracking</h3>
+                <p>
+                    BoT-SORT associates UAV detections across consecutive frames and
+                    assigns persistent track IDs for continuous video-level monitoring.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<section id="comparison" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Comparison with Lightweight YOLO Models</h2>
+
+        <p class="architecture-intro">
+            LiYOLO was compared with six lightweight YOLO detectors under the
+            same experimental conditions. The proposed model achieves the best
+            overall detection accuracy while maintaining real-time inference.
+        </p>
+
+        <div class="table-wrapper">
+            <table class="results-table">
+
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>mAP@0.5</th>
+                        <th>mAP@0.5:0.95</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>FPS</th>
+                        <th>Params (M)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>YOLOv5n</td>
+                        <td>0.822</td>
+                        <td>0.512</td>
+                        <td>0.912</td>
+                        <td>0.820</td>
+                        <td>45.2</td>
+                        <td>4.1</td>
+                    </tr>
+
+                    <tr>
+                        <td>YOLOv6n</td>
+                        <td>0.832</td>
+                        <td>0.533</td>
+                        <td>0.938</td>
+                        <td>0.823</td>
+                        <td>55.0</td>
+                        <td>3.8</td>
+                    </tr>
+
+                    <tr>
+                        <td>YOLOv8n</td>
+                        <td>0.843</td>
+                        <td>0.542</td>
+                        <td>0.933</td>
+                        <td>0.813</td>
+                        <td>64.7</td>
+                        <td>3.5</td>
+                    </tr>
+
+                    <tr>
+                        <td>YOLOv9n</td>
+                        <td>0.892</td>
+                        <td>0.526</td>
+                        <td>0.922</td>
+                        <td>0.832</td>
+                        <td>57.3</td>
+                        <td>2.9</td>
+                    </tr>
+
+                    <tr>
+                        <td>YOLOv10n</td>
+                        <td>0.813</td>
+                        <td>0.500</td>
+                        <td>0.934</td>
+                        <td>0.854</td>
+                        <td>62.0</td>
+                        <td>2.7</td>
+                    </tr>
+
+                    <tr>
+                        <td>YOLOv11n</td>
+                        <td>0.957</td>
+                        <td>0.707</td>
+                        <td>0.957</td>
+                        <td>0.945</td>
+                        <td>52.0</td>
+                        <td>2.6</td>
+                    </tr>
+
+                    <tr class="highlight-row">
+                        <td><strong>LiYOLO</strong></td>
+                        <td><strong>0.985</strong></td>
+                        <td><strong>0.745</strong></td>
+                        <td><strong>0.985</strong></td>
+                        <td><strong>0.962</strong></td>
+                        <td><strong>92.5</strong></td>
+                        <td><strong>2.7</strong></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</section>
+<section id="ablation" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Ablation Study</h2>
+
+        <p class="architecture-intro">
+            The ablation study evaluates the individual and combined effects of
+            CBAM attention and the additional P2 detection head in the proposed
+            LiYOLO detector.
+        </p>
+
+        <div class="table-wrapper">
+            <table class="results-table">
+
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>CBAM</th>
+                        <th>P2</th>
+                        <th>mAP@0.5</th>
+                        <th>mAP@0.5:0.95</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Baseline YOLOv11n</td>
+                        <td>✗</td>
+                        <td>✗</td>
+                        <td>0.957</td>
+                        <td>0.707</td>
+                        <td>0.957</td>
+                        <td>0.945</td>
+                    </tr>
+
+                    <tr>
+                        <td>CBAM only</td>
+                        <td>✓</td>
+                        <td>✗</td>
+                        <td>0.831</td>
+                        <td>0.487</td>
+                        <td>0.942</td>
+                        <td>0.769</td>
+                    </tr>
+
+                    <tr>
+                        <td>P2 only</td>
+                        <td>✗</td>
+                        <td>✓</td>
+                        <td>0.868</td>
+                        <td>0.537</td>
+                        <td>0.946</td>
+                        <td>0.810</td>
+                    </tr>
+
+                    <tr class="highlight-row">
+                        <td><strong>LiYOLO (CBAM + P2)</strong></td>
+                        <td><strong>✓</strong></td>
+                        <td><strong>✓</strong></td>
+                        <td><strong>0.985</strong></td>
+                        <td><strong>0.745</strong></td>
+                        <td><strong>0.985</strong></td>
+                        <td><strong>0.962</strong></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</section>
+<section id="experiments" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Qualitative Detection Results</h2>
+
+        <p class="architecture-intro">
+            LiYOLO is evaluated under diverse surveillance conditions including
+            complex natural backgrounds, clean open scenes, low-light sunset
+            conditions, small distant UAV targets, LivNet-enhanced low-light
+            inputs, and cluttered residential environments.
+        </p>
+
+        <div class="architecture-image">
+            <img src="assets/images/liYOLO_qualitative_detection.png"
+                 alt="Qualitative UAV detection results of LiYOLO">
+        </div>
+
+    </div>
+</section>
+<section id="lowlight" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Low-Light Enhancement</h2>
+
+        <p class="architecture-intro">
+            Nighttime and low-light frames are selectively routed through the
+            fine-tuned LivNet enhancement module before UAV detection.
+            The enhancement stage improves scene brightness, local contrast,
+            and target visibility while preserving UAV structures required
+            for reliable localization.
+        </p>
+
+        <div class="architecture-image">
+            <img src="assets/images/liYOLO_lowlight_enhancement.png"
+                 alt="Low-light UAV enhancement and detection results using LivNet">
+        </div>
+
+    </div>
+</section>
+<section id="tracking" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">ID-Based UAV Tracking</h2>
+
+        <p class="architecture-intro">
+            After UAV detection, BoT-SORT performs frame-to-frame association and
+            assigns persistent track IDs to detected drones. This enables continuous
+            video-level monitoring and preserves UAV identity across consecutive frames
+            in both single-target and multi-target surveillance scenarios.
+        </p>
+
+        <div class="architecture-image">
+            <img src="assets/images/liYOLO_tracking_results.png"
+                 alt="ID-based UAV tracking results using BoT-SORT">
+        </div>
+
+    </div>
+</section>
+<section id="tracking-analysis" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Per-Frame Tracking Analysis</h2>
+
+        <p class="architecture-intro">
+            The temporal behavior of LiYOLO-Track is evaluated over a 157-frame
+            UAV video sequence. The analysis compares the YOLOv11n baseline and
+            the proposed LiYOLO detector in terms of detection confidence,
+            inference time, detections per frame, and FPS during BoT-SORT tracking.
+        </p>
+
+        <div class="architecture-image">
+            <img src="assets/images/liYOLO_tracking_analysis.png"
+                 alt="Per-frame UAV tracking analysis using BoT-SORT">
+        </div>
+
+    </div>
+</section>
+<section id="setup" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Experimental Setup</h2>
+
+        <div class="setup-grid">
+
+            <div class="setup-card">
+                <h3>Dataset</h3>
+                <p>DUT Anti-UAV</p>
+                <span>5,243 UAV instances</span>
+            </div>
+
+            <div class="setup-card">
+                <h3>Input Resolution</h3>
+                <p>640 × 640</p>
+                <span>YOLO detection input</span>
+            </div>
+
+            <div class="setup-card">
+                <h3>Training</h3>
+                <p>100 Epochs</p>
+                <span>Batch size 8 · AdamW</span>
+            </div>
+
+            <div class="setup-card">
+                <h3>GPU</h3>
+                <p>RTX 3060</p>
+                <span>12 GB VRAM</span>
+            </div>
+
+            <div class="setup-card">
+                <h3>LivNet</h3>
+                <p>50 Epochs</p>
+                <span>723 drone-oriented paired images</span>
+            </div>
+
+            <div class="setup-card">
+                <h3>Tracker</h3>
+                <p>BoT-SORT</p>
+                <span>Default Ultralytics configuration</span>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<section id="conclusion" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Conclusion</h2>
+
+        <p class="abstract-text">
+            LiYOLO-Track provides a lightweight and real-time framework for
+            day–night anti-drone detection and ID-based UAV tracking. The system
+            integrates LivNet-based low-light enhancement, a modified YOLOv11n
+            detector with CBAM attention and a high-resolution P2 detection head,
+            and BoT-SORT tracking within a unified surveillance pipeline.
+        </p>
+
+        <p class="abstract-text">
+            Experimental evaluation demonstrates strong detection performance,
+            achieving an mAP@0.5 of 0.985, mAP@0.5:0.95 of 0.745,
+            precision of 0.985, recall of 0.962, and 92.5 FPS while maintaining
+            a compact 2.7M-parameter model. Qualitative experiments further show
+            reliable operation across complex natural scenes, cluttered
+            environments, small distant UAV targets, and low-light conditions.
+            Together with persistent ID-based tracking, the framework extends
+            image-level UAV detection toward continuous video-level anti-drone
+            surveillance.
+        </p>
+
+    </div>
+</section>
+<section id="future-work" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Future Work</h2>
+
+        <p class="abstract-text">
+            Future work will focus on extending LiYOLO-Track toward more challenging
+            real-world anti-drone surveillance scenarios. Planned directions include
+            evaluating the framework under denser multi-UAV conditions, stronger
+            illumination changes, adverse weather, severe occlusion, and longer
+            surveillance sequences.
+        </p>
+
+        <p class="abstract-text">
+            Further development will also investigate improved temporal association,
+            more efficient edge deployment, and broader validation on additional
+            anti-drone datasets. These extensions aim to strengthen the robustness
+            and practical applicability of LiYOLO-Track for continuous real-time
+            UAV surveillance.
+        </p>
+
+    </div>
+</section>
+<section id="paper" class="content-section">
+    <div class="section-container">
+
+        <h2 class="section-title">Paper</h2>
+
+        <div class="paper-card">
+
+            <h3>
+                LiYOLO-Track: A Lightweight Day–Night Framework for
+                Anti-Drone Detection and ID-Based Tracking
+            </h3>
+
+            <p class="paper-authors">
+                Muhammad Farhan · Hassan Eesaar · Afaq Ahmed · Deok Jin Lee
+            </p>
+
+            <p class="paper-affiliation">
+                Jeonbuk National University ·
+                Center for Autonomous Intelligence and e-Mobility (CAIM)
+            </p>
+
+            <p class="paper-status">
+                Research Manuscript
+            </p>
+
+        </div>
+
+    </div>
+</section>
+<footer class="site-footer">
+
+    <div class="footer-content">
+
+        <p>
+            © 2026 LiYOLO-Track · CAIM Lab · Jeonbuk National University
+        </p>
+
+        <p>
+            Center for Autonomous Intelligence and e-Mobility
+        </p>
+
+    </div>
+
+</footer>
+</body>
+
+</html>
