@@ -2,27 +2,29 @@
 
 LiYOLO-Track is a day-and-night UAV detection and tracking framework that combines low-light image enhancement, a modified YOLOv11n detector, and BoT-SORT tracking.
 
+For more details, results, figures, and tracking demonstrations, visit the [LiYOLO-Track Project Page](https://farhanaicodehub.github.io/LiYOLO-Track/).
+
 ## Main Components
 
-* **LivNet enhancement:** improves visibility in low-light and nighttime UAV images.
-* **LiYOLO detector:** modified YOLOv11n with CBAM attention and a P2 detection head for small UAV detection.
-* **BoT-SORT tracking:** maintains UAV identities across video frames.
-* **Day/night processing:** supports daytime frames and enhanced nighttime frames.
+- **LivNet enhancement:** improves visibility in low-light and nighttime UAV images.
+- **LiYOLO detector:** modified YOLOv11n with CBAM attention and a P2 detection head for small UAV detection.
+- **BoT-SORT tracking:** maintains UAV identities across video frames.
+- **Day/night processing:** supports daytime frames and enhanced nighttime frames.
 
 ## Repository Structure
 
 ```text
 LiYOLO-Track/
-¦§¦¡¦¡ assets/
-¦§¦¡¦¡ configs/
-¦§¦¡¦¡ detector/
-¦§¦¡¦¡ enhancement/
-¦§¦¡¦¡ scripts/
-¦§¦¡¦¡ tracking/
-¦§¦¡¦¡ weights/
-¦§¦¡¦¡ .gitignore
-¦§¦¡¦¡ README.md
-¦¦¦¡¦¡ requirements.txt
+Â¦Â§Â¦Â¡Â¦Â¡ assets/
+Â¦Â§Â¦Â¡Â¦Â¡ configs/
+Â¦Â§Â¦Â¡Â¦Â¡ detector/
+Â¦Â§Â¦Â¡Â¦Â¡ enhancement/
+Â¦Â§Â¦Â¡Â¦Â¡ scripts/
+Â¦Â§Â¦Â¡Â¦Â¡ tracking/
+Â¦Â§Â¦Â¡Â¦Â¡ weights/
+Â¦Â§Â¦Â¡Â¦Â¡ .gitignore
+Â¦Â§Â¦Â¡Â¦Â¡ README.md
+Â¦Â¦Â¦Â¡Â¦Â¡ requirements.txt
 ```
 
 ## Installation
@@ -41,9 +43,9 @@ Place the following trained model files inside the `weights/` directory:
 
 ```text
 weights/
-¦§¦¡¦¡ livenet_best.pth
-¦§¦¡¦¡ liyolo_best.pt
-¦¦¦¡¦¡ yolo11n_baseline.pt
+Â¦Â§Â¦Â¡Â¦Â¡ livenet_best.pth
+Â¦Â§Â¦Â¡Â¦Â¡ liyolo_best.pt
+Â¦Â¦Â¦Â¡Â¦Â¡ yolo11n_baseline.pt
 ```
 
 The trained weights are not included in the repository.
@@ -52,15 +54,15 @@ The trained weights are not included in the repository.
 
 ```text
 data/
-¦§¦¡¦¡ train/
-¦¢   ¦§¦¡¦¡ img/
-¦¢   ¦¦¦¡¦¡ labels/
-¦§¦¡¦¡ val/
-¦¢   ¦§¦¡¦¡ img/
-¦¢   ¦¦¦¡¦¡ labels/
-¦¦¦¡¦¡ test/
-    ¦§¦¡¦¡ img/
-    ¦¦¦¡¦¡ labels/
+Â¦Â§Â¦Â¡Â¦Â¡ train/
+Â¦Â¢   Â¦Â§Â¦Â¡Â¦Â¡ img/
+Â¦Â¢   Â¦Â¦Â¦Â¡Â¦Â¡ labels/
+Â¦Â§Â¦Â¡Â¦Â¡ val/
+Â¦Â¢   Â¦Â§Â¦Â¡Â¦Â¡ img/
+Â¦Â¢   Â¦Â¦Â¦Â¡Â¦Â¡ labels/
+Â¦Â¦Â¦Â¡Â¦Â¡ test/
+    Â¦Â§Â¦Â¡Â¦Â¡ img/
+    Â¦Â¦Â¦Â¡Â¦Â¡ labels/
 ```
 
 The dataset path is configured in `configs/dataset.yaml`.
